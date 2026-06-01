@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { listCourses } from "../api";
 import type { CourseSummary, Profile } from "../types";
 import { PROFILE_LABELS } from "../types";
-import { BookOpen, ChevronRight, GraduationCap, TrendingUp, Wrench, Headphones } from "lucide-react";
+import { BookOpen, ChevronRight, GraduationCap, TrendingUp, Wrench, Headphones, Clock } from "lucide-react";
 import { getUser } from "../auth";
 import type { AuthUser } from "../auth";
 
@@ -105,14 +105,27 @@ export default function UserPortal() {
                 </div>
                 <div className="text-xs text-base-content/40 font-medium">{c.service}</div>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex gap-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   <span className="badge badge-sm bg-primary/10 text-primary border-0 font-semibold capitalize">
                     {c.level}
                   </span>
+                  {c.estimated_reading_minutes && (
+                    <span className="badge badge-sm bg-base-200 text-base-content/40 border-0 font-medium flex items-center gap-1">
+                      <Clock size={11} /> {c.estimated_reading_minutes} min
+                    </span>
+                  )}
                 </div>
-                <ChevronRight size={16} className="text-base-content/30 group-hover:text-primary transition-colors" />
+                <ChevronRight size={16} className="text-base-content/30 group-hover:text-primary transition-colors flex-shrink-0" />
               </div>
+              {/* Tags */}
+              {c.tags && c.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1 pt-1 border-t border-base-200 mt-1">
+                  {c.tags.slice(0, 3).map((tag) => (
+                    <span key={tag} className="text-xs text-base-content/30 font-mono">#{tag}</span>
+                  ))}
+                </div>
+              )}
             </Link>
           ))}
         </div>
