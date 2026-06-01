@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://albus/schema/course.schema.json",
+  "title": "Course",
+  "description": "Canonical shape of a generated course. The single contract shared by frontend, backend and agent. Change only via reviewed PR.",
+  "type": "object",
+  "required": ["id", "title", "service", "persona", "status", "modules"],
+  "properties": {
+    "id": { "type": "string", "description": "Slug, e.g. captive-portal-sales-beginner-external" },
+    "title": { "type": "string" },
+    "service": { "type": "string", "description": "The product/service the course teaches" },
+    "summary": { "type": "string" },
+    "persona": {
+      "type": "object",
+      "required": ["audience", "level", "scope"],
+      "properties": {
+        "audience": { "enum": ["sales", "technical", "management", "general"] },
+        "level": { "enum": ["beginner", "intermediate", "advanced"] },
+        "scope": { "enum": ["internal", "external"] }
+      }
+    },
+    "status": { "enum": ["pending", "generating", "ready", "failed"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "content_markdown"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "objectives": { "type": "array", "items": { "type": "string" } },
+          "content_markdown": { "type": "string" },
+          "citations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "url": { "type": "string" }
+              }
+            }
+          },
+          "quiz": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["question", "options", "answer_index"],
+              "properties": {
+                "question": { "type": "string" },
+                "options": { "type": "array", "items": { "type": "string" } },
+                "answer_index": { "type": "integer" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

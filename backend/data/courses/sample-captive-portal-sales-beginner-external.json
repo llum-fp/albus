@@ -1,0 +1,29 @@
+{
+  "id": "sample-captive-portal-sales-beginner-external",
+  "title": "Selling the Captive Portal (sample)",
+  "service": "Captive Portal",
+  "summary": "Sample course committed to the repo so the catalogue is never empty. Beginner sales course on the Captive Portal.",
+  "persona": { "audience": "sales", "level": "beginner", "scope": "external" },
+  "status": "ready",
+  "created_at": "2026-06-01T00:00:00Z",
+  "modules": [
+    {
+      "id": "m1-overview",
+      "title": "Captive Portal: Overview",
+      "objectives": ["Explain in one sentence what the Captive Portal does for a customer"],
+      "content_markdown": "## What is it?\n\nThe Captive Portal is the branded sign-in page guests see when they join the network. It gets guests online fast while giving the operator branding, terms acceptance, and usage analytics.\n\n_Sample content — the agent replaces this with grounded text from Confluence/SharePoint._",
+      "citations": [{ "title": "Confluence: Captive Portal Overview (placeholder)", "url": "" }],
+      "quiz": [
+        { "question": "What does the operator gain from a Captive Portal?", "options": ["Nothing", "Branding & analytics", "Slower wifi", "More cabling"], "answer_index": 1 }
+      ]
+    },
+    {
+      "id": "m2-value",
+      "title": "Value & Objection Handling",
+      "objectives": ["Pitch the core benefit", "Handle the two most common objections"],
+      "content_markdown": "## Why the customer buys\n\n- A polished, branded guest experience\n- Compliance (terms acceptance) handled automatically\n- Insight into who is connecting and when\n\n### Objections\n1. \"It's too expensive\" -> frame against the value of guest data and brand experience.\n2. \"We already have wifi\" -> this is the experience and control layer on top of wifi.",
+      "citations": [],
+      "quiz": []
+    }
+  ]
+}

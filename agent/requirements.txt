@@ -1,0 +1,4 @@
+# Real generation uses the Claude Agent SDK ("Claude Code" as a framework).
+# Optional for the POC — the stub runs with none of these installed.
+claude-agent-sdk>=0.1.0 ; python_version >= "3.10"
+pyyaml>=6.0

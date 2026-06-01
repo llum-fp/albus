@@ -1,0 +1,38 @@
+# Personas as CONFIG, not code. Adding "Finance wants billing" later = a new entry here.
+# The Audience Adapter step consumes this to re-project a course for its target reader.
+
+audiences:
+  sales:
+    label: Sales / Marketing
+    emphasis: >
+      Why a customer buys it, the value proposition, competitive differentiation,
+      typical objections and how to handle them.
+    avoid: deep configuration internals
+    tone: persuasive, benefit-led, plain language
+  technical:
+    label: Technical / Support
+    emphasis: >
+      How it works under the hood, architecture, configuration steps, common
+      failure modes and troubleshooting.
+    avoid: marketing fluff
+    tone: precise, hands-on, assumes responsibility
+  management:
+    label: Management
+    emphasis: business impact, cost model, rollout, risk, decision criteria
+    avoid: low-level config
+    tone: concise, decision-oriented
+  general:
+    label: General
+    emphasis: broad plain-language overview
+    avoid: jargon
+    tone: friendly, accessible
+
+levels:
+  beginner: { assumes: no prior knowledge, depth: foundational concepts only }
+  intermediate: { assumes: working familiarity, depth: practical detail and examples }
+  advanced: { assumes: expert, depth: edge cases, internals, optimisation }
+
+# scope controls REDACTION, not just tone — enforced at retrieval in Phase 2.
+scopes:
+  internal: { may_include_confidential: true, note: for employees only }
+  external: { may_include_confidential: false, note: safe to share with customers }
