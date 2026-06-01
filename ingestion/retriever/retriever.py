@@ -1,8 +1,9 @@
 """Document retrieval — implements docs/RETRIEVAL_CONTRACT.md.
 
-Phase 1 (now): reads hand-written chunks from ingestion/corpus/*.json, filters by service.
-Offline, no deps. Phase 2: replace the corpus read with vector search over docs pulled from
-Confluence via MCP (see connectors.py). The retrieve() signature stays fixed.
+Phase 1 (default): reads hand-written chunks from ingestion/corpus/*.json. Offline, no deps.
+Phase 2 (Confluence): set ALBUS_CONFLUENCE_SPACE=<SPACE_KEY> (or pass --confluence-space to
+the CLI) to pull live pages from Confluence via connectors.pull_confluence(). The retrieve()
+signature is unchanged — the switch is entirely behind this function.
 
 This is the "knowledge index" of the spec: approved corporate knowledge, returned WITH citations,
 used both to ground course generation and to answer the AI Tutor (RF-6).
@@ -10,6 +11,7 @@ used both to ground course generation and to answer the AI Tutor (RF-6).
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -40,10 +42,26 @@ def _load_corpus() -> List[Chunk]:
 def retrieve(service: str, profile: Optional[str] = None, top_k: int = 8) -> List[Chunk]:
     """Return approved-knowledge chunks for a service, each with a citation.
 
-    `profile` is accepted so retrieval can later bias toward profile-relevant material; for the
-    POC it does not filter (all approved chunks for the service are eligible). Phase 2 ranks by
-    vector similarity to (service, profile).
+    When ALBUS_CONFLUENCE_SPACE is set, pulls live pages from that Confluence space and
+    filters by service name match in the page title or body. Otherwise reads corpus/*.json.
+
+    `profile` is accepted so retrieval can later bias toward profile-relevant material; for
+    the POC it does not filter. Phase 3 will rank by vector similarity to (service, profile).
     """
+    space = os.environ.get("ALBUS_CONFLUENCE_SPACE")
+    if space:
+        from .connectors import pull_confluence
+        all_chunks = pull_confluence(space)
+        svc = service.lower()
+        results = [
+            c for c in all_chunks
+            if svc in c.source_title.lower() or svc in c.text.lower()
+        ]
+        for c in results:
+            c.service = service
+        return results[:top_k]
+
+    # Phase 1 fallback: offline corpus
     svc = service.lower()
     results = [c for c in _load_corpus() if svc in c.service.lower()]
     return results[:top_k]
