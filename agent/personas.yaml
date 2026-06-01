@@ -1,5 +1,10 @@
 # Profiles as CONFIG, not code. The spec fixes three end-user profiles: Sales / Technical / CSM.
-# The course generator (and Audience Adapter step) consume this to shape a course for its profile.
+# This file is the SINGLE SOURCE OF TRUTH for how a course differs per profile. Both the offline
+# stub (course_creator/stub.py) and the live Claude prompt (course_creator/prompts.py) consume it,
+# so the per-profile contrast is identical whether or not an API key is set.
+#
+# Everything here is GENERIC: use the {service} placeholder; never hard-code a specific service.
+# Each profile owns its OWN module structure (different count + titles) — that is the demo contrast.
 
 profiles:
   sales:
@@ -9,6 +14,68 @@ profiles:
       objection handling, and customer use cases.
     avoid: deep configuration internals
     tone: persuasive, benefit-led, plain language
+    syllabus:
+      - id: m1-overview
+        title: "{service}: Commercial Overview"
+        objectives:
+          - "Position what {service} is in one customer-facing sentence"
+          - "Identify who buys {service} and why"
+        content: |
+          ## What {service} means for the customer
+
+          Frame **{service}** around the outcome the customer gets, not how it works.
+
+          - The problem {service} solves
+          - Who feels that problem (the buyer)
+          - The one-line value statement
+        quiz:
+          - style: multiple_choice
+            question: "What should a sales conversation about {service} lead with?"
+            options: ["Internal architecture", "The customer value and outcomes", "Configuration steps", "Source code"]
+            answer_index: 1
+            explanation: "Sales leads with customer value and outcomes, not implementation detail."
+      - id: m2-value
+        title: "Value Proposition & Use Cases"
+        objectives:
+          - "Articulate the top 3 benefits of {service}"
+          - "Map {service} to two concrete customer use cases"
+        content: |
+          ## Why the customer buys {service}
+
+          - Benefit 1 — the outcome it unlocks
+          - Benefit 2 — the cost or risk it removes
+          - Benefit 3 — the differentiator vs. alternatives
+
+          ### Use cases
+          1. Use case A
+          2. Use case B
+        quiz:
+          - style: scenario
+            question: "A prospect says a competitor is cheaper. What is the strongest first move?"
+            options: ["Immediately drop the price", "Reframe around {service}'s value and outcomes", "End the conversation", "Escalate to engineering"]
+            answer_index: 1
+            explanation: "Compete on value and outcomes before discounting."
+      - id: m3-objections
+        title: "Objection Handling & Competitive Positioning"
+        objectives:
+          - "Handle the three most common objections to {service}"
+          - "Differentiate {service} from the main alternative"
+        content: |
+          ## Handling objections about {service}
+
+          1. "Too expensive" -> tie price to outcome
+          2. "We already have something" -> differentiate
+          3. "Not the right time" -> cost of inaction
+
+          ### Positioning
+          Lead with the differentiator that matters most to this buyer.
+        quiz:
+          - style: true_false
+            question: "Objections should be deflected and avoided rather than addressed directly."
+            options: ["True", "False"]
+            answer_index: 1
+            explanation: "Objections are buying signals; address them directly with value."
+
   technical:
     label: Technical
     emphasis: >
@@ -16,13 +83,144 @@ profiles:
       common failure modes and troubleshooting.
     avoid: marketing fluff
     tone: precise, hands-on
+    syllabus:
+      - id: m1-overview
+        title: "{service}: Technical Overview"
+        objectives:
+          - "Describe what {service} does at a system level"
+          - "Identify the main components of {service}"
+        content: |
+          ## {service} at a glance
+
+          A precise, hands-on description of what **{service}** is and its moving parts.
+
+          - Core components
+          - Where {service} sits in the wider system
+        quiz:
+          - style: true_false
+            question: "{service} can be operated effectively without understanding its request flow."
+            options: ["True", "False"]
+            answer_index: 1
+            explanation: "Understanding the flow is required to configure and troubleshoot it."
+      - id: m2-architecture
+        title: "Architecture & How It Works"
+        objectives:
+          - "Trace a request end to end through {service}"
+          - "Explain each stage's responsibility"
+        content: |
+          ## How {service} works
+
+          ```
+          client -> {service} -> downstream -> result
+          ```
+
+          Walk each hop and what can go wrong at it.
+        quiz:
+          - style: multiple_choice
+            question: "What is the best first step when diagnosing a {service} failure?"
+            options: ["Restart everything", "Reproduce and isolate the failing stage", "Rewrite the configuration", "Ignore the logs"]
+            answer_index: 1
+            explanation: "Reproduce and isolate before changing anything."
+      - id: m3-config
+        title: "Configuration & Procedures"
+        objectives:
+          - "Apply a standard {service} configuration"
+          - "Follow the documented operational procedure"
+        content: |
+          ## Configuring {service}
+
+          1. Prerequisites
+          2. Core settings
+          3. Validation step
+
+          Always validate after a change.
+        quiz:
+          - style: multiple_choice
+            question: "After changing a {service} configuration, what should you do?"
+            options: ["Nothing, it is automatic", "Validate the change against expected behaviour", "Delete the logs", "Restart the client only"]
+            answer_index: 1
+            explanation: "Validate every change before considering it done."
+      - id: m4-troubleshooting
+        title: "Troubleshooting & Failure Modes"
+        objectives:
+          - "Diagnose the two most common {service} failures"
+          - "Apply a structured troubleshooting method"
+        content: |
+          ## Troubleshooting {service}
+
+          - Symptom -> likely cause -> check
+          - Common failure mode A
+          - Common failure mode B
+        quiz:
+          - style: scenario
+            question: "Users report intermittent {service} failures right after a config change. Best next action?"
+            options: ["Wait and hope it stabilises", "Roll back the change and reproduce in isolation", "Change three more settings at once", "Blame the network"]
+            answer_index: 1
+            explanation: "Roll back to the last known-good state, then isolate."
+
   csm:
     label: Customer Service Manager
     emphasis: >
       Processes, SLAs, escalation paths, client communication, and incident management.
     avoid: low-level engineering detail
     tone: process-oriented, customer-facing
+    syllabus:
+      - id: m1-overview
+        title: "{service}: Service Overview"
+        objectives:
+          - "Explain {service} in client-facing terms"
+          - "Identify the CSM's responsibilities around {service}"
+        content: |
+          ## {service} from a service-management view
 
+          What the client experiences and what the CSM owns.
+
+          - Client-facing summary of {service}
+          - The CSM's scope of responsibility
+        quiz:
+          - style: multiple_choice
+            question: "What is the CSM's primary concern with {service}?"
+            options: ["The source code", "Processes, SLAs and client communication", "Sales commissions", "UI colours"]
+            answer_index: 1
+            explanation: "CSMs own processes, SLAs and client communication."
+      - id: m2-processes
+        title: "Processes & SLAs"
+        objectives:
+          - "Follow the standard process for {service}"
+          - "Apply the relevant SLA targets"
+        content: |
+          ## Process & SLAs for {service}
+
+          1. Intake
+          2. Acknowledge within SLA
+          3. Resolve and confirm
+
+          Know the acknowledgement and resolution targets.
+        quiz:
+          - style: true_false
+            question: "An incident can be closed before the SLA acknowledgement step is met."
+            options: ["True", "False"]
+            answer_index: 1
+            explanation: "Acknowledgement within the SLA is mandatory before closure."
+      - id: m3-escalation
+        title: "Escalation & Incident Management"
+        objectives:
+          - "Trigger the correct escalation path for {service}"
+          - "Communicate status to the client during an incident"
+        content: |
+          ## Escalation & incident handling for {service}
+
+          - When to escalate and to whom
+          - Status-update cadence to the client
+          - Closure summary
+        quiz:
+          - style: scenario
+            question: "A client incident on {service} is about to breach its SLA. What do you do first?"
+            options: ["Wait for it to resolve itself", "Acknowledge and trigger the escalation path", "Close the ticket", "Blame the client"]
+            answer_index: 1
+            explanation: "Acknowledge and escalate immediately to protect the SLA."
+
+# Level controls depth (optional metadata for the POC; profile drives structure).
 levels:
   beginner: { assumes: no prior knowledge, depth: foundational concepts only }
   intermediate: { assumes: working familiarity, depth: practical detail and examples }

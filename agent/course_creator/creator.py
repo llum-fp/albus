@@ -5,6 +5,10 @@ otherwise falls back to the offline stub so this lane always runs.
 
 Pure: no HTTP, no DB. Returns a dict matching shared/schema/course.schema.json (status 'draft').
 
+Profile differentiation (which modules, objectives, content emphasis and quiz styles each profile
+gets) is defined once in personas.yaml and consumed by BOTH the stub and the Claude prompt, so the
+offline and live paths produce the same per-profile contrast.
+
 NOTE (target, not built): the spec calls for an AI-guided *dialogue* with the admin to define
 the course (profile, depth, objectives, structure, evaluation) before generating. Today this is
 a single-shot generate(). See CLAUDE.md.
@@ -17,9 +21,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict
 
-from . import stub, prompts, sources
-
-_PERSONAS_PATH = Path(__file__).resolve().parent.parent / "personas.yaml"
+from . import stub, prompts, sources, personas
 
 
 @dataclass
@@ -27,14 +29,6 @@ class CourseRequest:
     service: str
     profile: str = "sales"   # sales | technical | csm
     level: str = "beginner"
-
-
-def _load_personas() -> Dict[str, Any]:
-    try:
-        import yaml  # optional dep
-        return yaml.safe_load(_PERSONAS_PATH.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
 
 
 def generate(req: CourseRequest) -> Dict[str, Any]:
@@ -56,11 +50,11 @@ def _generate_with_claude(req: CourseRequest) -> Dict[str, Any]:
     """
     from claude_agent_sdk import query, ClaudeAgentOptions  # type: ignore
 
-    personas = _load_personas()
+    persona_cfg = personas.load()
     chunks = sources.fetch(req.service, req.profile)        # approved knowledge (cited)
     source_text = sources.format_for_prompt(chunks)
     user_prompt = prompts.build_user_prompt(
-        req.service, req.profile, req.level, personas, sources=source_text
+        req.service, req.profile, req.level, persona_cfg, sources=source_text
     )
     schema = (Path(__file__).resolve().parents[2]
               / "shared" / "schema" / "course.schema.json").read_text(encoding="utf-8")
