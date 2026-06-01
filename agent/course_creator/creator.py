@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict
 
-from . import stub, prompts
+from . import stub, prompts, sources
 
 _PERSONAS_PATH = Path(__file__).resolve().parent.parent / "personas.yaml"
 
@@ -54,8 +54,11 @@ def _generate_with_claude(req: CourseRequest) -> Dict[str, Any]:
     from claude_agent_sdk import query, ClaudeAgentOptions  # type: ignore
 
     personas = _load_personas()
+    # Pull scope-redacted source chunks from the ingestion lane (empty if unavailable).
+    chunks = sources.fetch(req.service, req.scope, req.audience)
+    source_text = sources.format_for_prompt(chunks)
     user_prompt = prompts.build_user_prompt(
-        req.service, req.audience, req.level, req.scope, personas
+        req.service, req.audience, req.level, req.scope, personas, sources=source_text
     )
     schema = (Path(__file__).resolve().parents[2]
               / "shared" / "schema" / "course.schema.json").read_text(encoding="utf-8")

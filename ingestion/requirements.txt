@@ -1,0 +1,5 @@
+# Phase 1 stub needs nothing (stdlib only). Phase 2 adds retrieval + embeddings:
+# pgvector / psycopg, an embeddings client, and MCP connectors for Confluence/SharePoint.
+# Listed but commented so the stub stays zero-dependency.
+# psycopg[binary]>=3.1
+# pgvector>=0.2

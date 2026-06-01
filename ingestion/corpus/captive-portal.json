@@ -1,0 +1,34 @@
+[
+  {
+    "text": "The Captive Portal is the branded sign-in page guests see when they join the network. It gets guests online quickly while giving the operator branding, terms-of-service acceptance, and usage analytics.",
+    "source_title": "Captive Portal Overview",
+    "source_url": "https://confluence.example/CP/overview",
+    "visibility": "external",
+    "service": "Captive Portal",
+    "score": 0.0
+  },
+  {
+    "text": "Selling points: a polished guest experience, automatic compliance via terms acceptance, and analytics on who connects and when. Common objections: cost (counter with the value of analytics and brand experience) and 'we already have wifi' (this is the experience and control layer on top of wifi).",
+    "source_title": "Captive Portal Sales Playbook",
+    "source_url": "https://confluence.example/CP/sales",
+    "visibility": "external",
+    "service": "Captive Portal",
+    "score": 0.0
+  },
+  {
+    "text": "Request flow: client associates -> DHCP -> DNS intercept -> redirect to portal -> authentication -> session authorized -> internet access. The portal enforces a walled garden until the guest authenticates.",
+    "source_title": "Captive Portal Architecture",
+    "source_url": "https://confluence.example/CP/architecture",
+    "visibility": "internal",
+    "service": "Captive Portal",
+    "score": 0.0
+  },
+  {
+    "text": "Troubleshooting runbook (INTERNAL): redirect loop usually means the walled-garden allowlist is missing the portal host. DNS not resolving points at the intercept rule order. Check RADIUS reachability for auth failures. Escalation contacts and credentials are in the ops vault.",
+    "source_title": "Captive Portal Admin Runbook",
+    "source_url": "https://confluence.example/CP/runbook",
+    "visibility": "internal",
+    "service": "Captive Portal",
+    "score": 0.0
+  }
+]
