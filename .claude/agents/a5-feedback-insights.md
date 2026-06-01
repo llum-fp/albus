@@ -44,3 +44,14 @@ Agrega y analiza el feedback de los usuarios finales sobre el contenido, los res
 
 ## Criterios de éxito
 - Insights claros y accionables que el admin efectivamente use para mejorar cu
+
+
+---
+
+## Skills en este repositorio (slugs reales)
+Versión ejecutable en `.claude/`. Skills que usa este agente, por su carpeta real en `.claude/skills/`:
+- `s9-analisis-de-feedback`
+- `s13-taxonomia-y-etiquetado`
+- `s15-versionado-y-lifecycle-contenido`
+
+> Los IDs tipo `S##_...` y `A# (...)` del texto de diseño anterior corresponden a estos slugs. Mapa completo en `.claude/README.md`.

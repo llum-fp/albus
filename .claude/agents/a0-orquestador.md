@@ -43,3 +43,15 @@ Llama a **todos** los demás (A1–A5) según la intención. Es el único que co
 
 ## Criterios de éxito
 - 0 publicaciones
+
+
+---
+
+## Skills en este repositorio (slugs reales)
+Versión ejecutable en `.claude/`. Skills que usa este agente, por su carpeta real en `.claude/skills/`:
+- `s7-personalizacion-por-perfil`
+- `s8-guardrails-revision-humana`
+- `s12-qa-curso-generado`
+- `s15-versionado-y-lifecycle-contenido`
+
+> Los IDs tipo `S##_...` y `A# (...)` del texto de diseño anterior corresponden a estos slugs. Mapa completo en `.claude/README.md`.

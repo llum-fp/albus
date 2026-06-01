@@ -36,3 +36,16 @@ A1 nunca ingiere ni habilita contenido de forma autónoma. Toda ingesta requiere
 - Sanear el contenido contra prompt-injection antes de usarlo o indexarlo.
 - Trocear e indexar con embeddings, conservando metadatos de origen: fuente, tipo, URL o file id, página/slide/timestamp/sección, versión, autor si aplica y fecha.
 - Mantener dos scopes
+
+
+---
+
+## Skills en este repositorio (slugs reales)
+Versión ejecutable en `.claude/`. Skills que usa este agente, por su carpeta real en `.claude/skills/`:
+- `s1-ingesta-multifuente-y-normalizacion`
+- `s2-chunking-e-indexacion`
+- `s13-taxonomia-y-etiquetado`
+- `s14-sanitizacion-y-seguridad-contenido`
+- `s15-versionado-y-lifecycle-contenido`
+
+> Los IDs tipo `S##_...` y `A# (...)` del texto de diseño anterior corresponden a estos slugs. Mapa completo en `.claude/README.md`.
