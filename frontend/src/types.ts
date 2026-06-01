@@ -6,31 +6,47 @@ export type Status = "draft" | "approved" | "published" | "archived";
 
 export interface Citation { title: string; url: string; }
 export interface QuizItem { question: string; options: string[]; answer_index: number; explanation?: string; }
+export interface KeyConcept { term: string; definition: string; }
 
 export interface Module {
-  id: string;
-  title: string;
-  objectives: string[];
+  id:               string;
+  title:            string;
+  objectives:       string[];
   content_markdown: string;
-  citations: Citation[];
-  quiz: QuizItem[];
+  topics?:          string[];   // structured list alternative to content_markdown
+  citations:        Citation[];
+  quiz:             QuizItem[];
 }
 
 export interface Course {
-  id: string;
-  title: string;
-  service: string;
-  summary: string;
-  author: string;
-  profile: Profile;
-  level: Level;
-  status: Status;
-  created_at: string;
-  modules: Module[];
+  id:                         string;
+  title:                      string;
+  service:                    string;
+  summary:                    string;
+  author:                     string;
+  profile:                    Profile;
+  level:                      Level;
+  status:                     Status;
+  created_at:                 string;
+  updated_at?:                string;
+  estimated_reading_minutes?: number;
+  tags?:                      string[];
+  objectives?:                string[];   // course-level objectives
+  key_concepts?:              KeyConcept[];
+  path_location?:             string;
+  modules:                    Module[];
 }
 
 export interface CourseSummary {
-  id: string; title: string; service: string; profile: Profile; level: Level; status: Status;
+  id:                         string;
+  title:                      string;
+  service:                    string;
+  profile:                    Profile;
+  level:                      Level;
+  status:                     Status;
+  author?:                    string;
+  estimated_reading_minutes?: number;
+  tags?:                      string[];
 }
 
 export interface CreateCourseRequest {
@@ -38,7 +54,7 @@ export interface CreateCourseRequest {
 }
 
 export const PROFILE_LABELS: Record<Profile, string> = {
-  sales: "Sales",
+  sales:     "Sales",
   technical: "Technical",
-  csm: "Customer Service Manager",
+  csm:       "Customer Service Manager",
 };
