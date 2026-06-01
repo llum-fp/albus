@@ -46,3 +46,15 @@ Asistente conversacional que resuelve dudas en contexto usando recuperación sob
 - Cita obligatoria; sin cita no se entrega la respuesta.
 - Rechazo honesto explícito ante falta de base (RNF de calidad del tutor).
 - Tratamiento del contenido recupera
+
+
+---
+
+## Skills en este repositorio (slugs reales)
+Versión ejecutable en `.claude/`. Skills que usa este agente, por su carpeta real en `.claude/skills/`:
+- `s3-recuperacion-con-citas`
+- `s4-respuesta-anclada-y-rechazo`
+- `s7-personalizacion-por-perfil`
+- `s14-sanitizacion-y-seguridad-contenido`
+
+> Los IDs tipo `S##_...` y `A# (...)` del texto de diseño anterior corresponden a estos slugs. Mapa completo en `.claude/README.md`.

@@ -38,3 +38,17 @@ Regla: los checkpoints formativos nunca afectan la nota ni el certificado; si lo
 
 ## Skills que usa
 - `S6_Redaccion_Items_Ev
+
+
+---
+
+## Skills en este repositorio (slugs reales)
+Versión ejecutable en `.claude/`. Skills que usa este agente, por su carpeta real en `.claude/skills/`:
+- `s4-respuesta-anclada-y-rechazo`
+- `s6-redaccion-items-evaluacion`
+- `s10-calificacion-y-feedback`
+- `s12-qa-curso-generado`
+- `s13-taxonomia-y-etiquetado`
+- `s15-versionado-y-lifecycle-contenido`
+
+> Los IDs tipo `S##_...` y `A# (...)` del texto de diseño anterior corresponden a estos slugs. Mapa completo en `.claude/README.md`.

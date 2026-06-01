@@ -44,4 +44,20 @@ A partir del contenido normalizado por A1 y de las respuestas del admin, diseña
 
 ## Guardrails / control humano
 - **Nunca publica**: solo produce borradores. La publicación es acción exclusiva del admin (RF-3).
-- No genera contenido fuera del material fuente; si falta base, lo indica en 
+- No genera contenido fuera del material fuente; si falta base, lo indica en
+
+
+---
+
+## Skills en este repositorio (slugs reales)
+Versión ejecutable en `.claude/`. Skills que usa este agente, por su carpeta real en `.claude/skills/`:
+- `s4-respuesta-anclada-y-rechazo`
+- `s5-diseno-instruccional`
+- `s7-personalizacion-por-perfil`
+- `s11-presentacion-y-formato`
+- `s12-qa-curso-generado`
+- `s13-taxonomia-y-etiquetado`
+- `s14-sanitizacion-y-seguridad-contenido`
+- `s15-versionado-y-lifecycle-contenido`
+
+> Los IDs tipo `S##_...` y `A# (...)` del texto de diseño anterior corresponden a estos slugs. Mapa completo en `.claude/README.md`.
