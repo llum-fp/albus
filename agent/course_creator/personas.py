@@ -128,3 +128,26 @@ def profile_config(personas: Dict[str, Any], profile: str) -> Dict[str, Any]:
 def syllabus_for(personas: Dict[str, Any], profile: str) -> List[Dict[str, Any]]:
     """The per-profile list of module blueprints (the structural contrast between profiles)."""
     return profile_config(personas, profile).get("syllabus", [])
+
+
+# Dependency-free fallback for the summative final assessment (used when personas.yaml lacks one).
+_FALLBACK_FINAL: Dict[str, Any] = {
+    "sales": [{"style": "scenario",
+               "question": "A prospect compares {service} only on price. Best close?",
+               "options": ["Match lowest price", "Quantify the value/outcome", "Walk away", "Discount now"],
+               "answer_index": 1, "explanation": "Sell on quantified value, not price."}],
+    "technical": [{"style": "scenario",
+                   "question": "A {service} failure appears after a change. First step?",
+                   "options": ["Change more", "Roll back and isolate", "Escalate to sales", "Ignore it"],
+                   "answer_index": 1, "explanation": "Roll back to known-good, then isolate."}],
+    "csm": [{"style": "scenario",
+             "question": "A {service} incident will breach SLA shortly. First action?",
+             "options": ["Wait", "Acknowledge and escalate", "Close ticket", "Reassign silently"],
+             "answer_index": 1, "explanation": "Acknowledge and escalate to protect the SLA."}],
+}
+
+
+def final_assessment_for(personas: Dict[str, Any], profile: str) -> List[Dict[str, Any]]:
+    """Summative (graded) final-evaluation seed for a profile. Distinct from formative checkpoints."""
+    fa = personas.get("final_assessment", {})
+    return fa.get(profile) or _FALLBACK_FINAL.get(profile, [])

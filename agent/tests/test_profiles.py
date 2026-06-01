@@ -84,5 +84,33 @@ def _main() -> int:
     return 1 if failed else 0
 
 
+
+# --- Formative / summative checkpoint tests (design decision §E) -------------------------------
+
+def test_every_quiz_item_has_a_valid_kind():
+    for p, c in _courses().items():
+        for m in c["modules"]:
+            for q in m.get("quiz", []):
+                assert q.get("kind") in ("formative", "summative"), \
+                    f"[{p}] quiz item missing/invalid kind: {q.get('kind')}"
+
+
+def test_formative_checkpoints_present_per_profile():
+    for p, c in _courses().items():
+        formative = [q for m in c["modules"] for q in m.get("quiz", []) if q.get("kind") == "formative"]
+        assert len(formative) >= 1, f"[{p}] expected at least one formative checkpoint"
+
+
+def test_summative_lives_in_final_assessment_module():
+    for p, c in _courses().items():
+        for m in c["modules"]:
+            kinds = {q.get("kind") for q in m.get("quiz", [])}
+            if "summative" in kinds:
+                assert m["id"] == "m-final-assessment", \
+                    f"[{p}] summative items must live in the final-assessment module, not {m['id']}"
+        ids = [m["id"] for m in c["modules"]]
+        assert "m-final-assessment" in ids, f"[{p}] missing the final-assessment module"
+
+
 if __name__ == "__main__":
     raise SystemExit(_main())
