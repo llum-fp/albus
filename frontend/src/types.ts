@@ -1,14 +1,11 @@
 // Mirrors shared/schema/course.schema.json. Keep in sync via PR when the contract changes.
 
-export type Audience = "sales" | "technical" | "management" | "general";
+export type Profile = "sales" | "technical" | "csm";
 export type Level = "beginner" | "intermediate" | "advanced";
-export type Scope = "internal" | "external";
-export type Status = "pending" | "generating" | "ready" | "failed";
-
-export interface Persona { audience: Audience; level: Level; scope: Scope; }
+export type Status = "draft" | "approved" | "published" | "archived";
 
 export interface Citation { title: string; url: string; }
-export interface QuizItem { question: string; options: string[]; answer_index: number; }
+export interface QuizItem { question: string; options: string[]; answer_index: number; explanation?: string; }
 
 export interface Module {
   id: string;
@@ -24,16 +21,24 @@ export interface Course {
   title: string;
   service: string;
   summary: string;
-  persona: Persona;
+  author: string;
+  profile: Profile;
+  level: Level;
   status: Status;
   created_at: string;
   modules: Module[];
 }
 
 export interface CourseSummary {
-  id: string; title: string; service: string; persona: Persona; status: Status;
+  id: string; title: string; service: string; profile: Profile; level: Level; status: Status;
 }
 
 export interface CreateCourseRequest {
-  service: string; audience: Audience; level: Level; scope: Scope;
+  service: string; profile: Profile; level: Level;
 }
+
+export const PROFILE_LABELS: Record<Profile, string> = {
+  sales: "Sales",
+  technical: "Technical",
+  csm: "Customer Service Manager",
+};

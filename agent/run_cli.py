@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""Generate a course from the command line.
+"""Generate a course draft from the command line.
 
 Examples
 --------
-  python run_cli.py --service "Captive Portal" --audience sales --level beginner --scope external
-  python run_cli.py --service "Captive Portal" --audience technical --scope internal --json
+  python run_cli.py --service "Captive Portal" --profile sales --level beginner
+  python run_cli.py --service "Captive Portal" --profile technical --json
 
 With --json it prints ONLY the course JSON to stdout (this is how the backend calls it).
-Without --json it prints a human-readable summary.
 """
 from __future__ import annotations
 
@@ -21,20 +20,18 @@ from course_creator import generate, CourseRequest
 def main() -> int:
     p = argparse.ArgumentParser(description="Albus course creator")
     p.add_argument("--service", required=True)
-    p.add_argument("--audience", default="general",
-                   choices=["sales", "technical", "management", "general"])
+    p.add_argument("--profile", default="sales", choices=["sales", "technical", "csm"])
     p.add_argument("--level", default="beginner",
                    choices=["beginner", "intermediate", "advanced"])
-    p.add_argument("--scope", default="internal", choices=["internal", "external"])
     p.add_argument("--json", action="store_true", help="print only the course JSON")
     args = p.parse_args()
 
-    course = generate(CourseRequest(args.service, args.audience, args.level, args.scope))
+    course = generate(CourseRequest(args.service, args.profile, args.level))
 
     if args.json:
         print(json.dumps(course, indent=2))
     else:
-        print(f"\n=== {course['title']} ===")
+        print(f"\n=== {course['title']} ===  [{course['status']}]")
         print(course.get("summary", ""))
         for m in course.get("modules", []):
             print(f"\n## {m['title']}")

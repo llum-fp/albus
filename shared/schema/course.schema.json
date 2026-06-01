@@ -2,24 +2,27 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://albus/schema/course.schema.json",
   "title": "Course",
-  "description": "Canonical shape of a generated course. The single contract shared by frontend, backend and agent. Change only via reviewed PR.",
+  "description": "Canonical shape of a course. The single contract shared by frontend, backend and agent. Change only via reviewed PR. NOTE: the deeper Course→Module→Lesson→Unit hierarchy and full evaluation model from the spec are documented in CLAUDE.md as the target; the POC implements Course→Module with a seed quiz.",
   "type": "object",
-  "required": ["id", "title", "service", "persona", "status", "modules"],
+  "required": ["id", "title", "service", "profile", "status", "modules"],
   "properties": {
-    "id": { "type": "string", "description": "Slug, e.g. captive-portal-sales-beginner-external" },
+    "id": { "type": "string", "description": "Slug, e.g. captive-portal-sales-beginner" },
     "title": { "type": "string" },
-    "service": { "type": "string", "description": "The product/service the course teaches" },
+    "service": { "type": "string", "description": "The product/service/process the course teaches" },
     "summary": { "type": "string" },
-    "persona": {
-      "type": "object",
-      "required": ["audience", "level", "scope"],
-      "properties": {
-        "audience": { "enum": ["sales", "technical", "management", "general"] },
-        "level": { "enum": ["beginner", "intermediate", "advanced"] },
-        "scope": { "enum": ["internal", "external"] }
-      }
+    "author": { "type": "string", "description": "Admin who created/owns the course" },
+    "profile": {
+      "enum": ["sales", "technical", "csm"],
+      "description": "Target end-user profile. Visibility axis: a published course is visible only to end-users of this profile."
     },
-    "status": { "enum": ["pending", "generating", "ready", "failed"] },
+    "level": {
+      "enum": ["beginner", "intermediate", "advanced"],
+      "description": "Content depth chosen at generation time (optional metadata)."
+    },
+    "status": {
+      "enum": ["draft", "approved", "published", "archived"],
+      "description": "Lifecycle. Generated courses start as 'draft'. Only an explicit admin approval moves draft→approved→published. End-users see ONLY 'published'. This is the mandatory human-in-the-loop gate."
+    },
     "created_at": { "type": "string", "format": "date-time" },
     "modules": {
       "type": "array",
@@ -42,6 +45,7 @@
             }
           },
           "quiz": {
+            "description": "Seed of the spec's evaluation model. Future: typed questions (multiple-choice / true-false / scenario), attempts, pass threshold — see CLAUDE.md.",
             "type": "array",
             "items": {
               "type": "object",
@@ -49,7 +53,8 @@
               "properties": {
                 "question": { "type": "string" },
                 "options": { "type": "array", "items": { "type": "string" } },
-                "answer_index": { "type": "integer" }
+                "answer_index": { "type": "integer" },
+                "explanation": { "type": "string" }
               }
             }
           }

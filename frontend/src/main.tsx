@@ -14,6 +14,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/learn" replace /> },
       { path: "admin", element: <AdminPortal /> },
+      { path: "admin/course/:id", element: <CourseView admin /> },
       { path: "learn", element: <UserPortal /> },
       { path: "learn/:id", element: <CourseView /> },
     ],

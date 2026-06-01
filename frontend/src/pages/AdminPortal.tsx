@@ -1,74 +1,81 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createCourse } from "../api";
-import type { Audience, Level, Scope } from "../types";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { createCourse, listCourses, approveCourse, publishCourse } from "../api";
+import type { Profile, Level, CourseSummary } from "../types";
+import { PROFILE_LABELS } from "../types";
 
-const AUDIENCES: Audience[] = ["sales", "technical", "management", "general"];
+const PROFILES: Profile[] = ["sales", "technical", "csm"];
 const LEVELS: Level[] = ["beginner", "intermediate", "advanced"];
-const SCOPES: Scope[] = ["internal", "external"];
 
 export default function AdminPortal() {
   const nav = useNavigate();
   const [service, setService] = useState("Captive Portal");
-  const [audience, setAudience] = useState<Audience>("sales");
+  const [profile, setProfile] = useState<Profile>("sales");
   const [level, setLevel] = useState<Level>("beginner");
-  const [scope, setScope] = useState<Scope>("external");
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  const [courses, setCourses] = useState<CourseSummary[]>([]);
+
+  async function refresh() {
+    setCourses(await listCourses()); // no filter → admin sees ALL statuses
+  }
+  useEffect(() => { refresh(); }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    setError("");
     try {
-      const course = await createCourse({ service, audience, level, scope });
-      nav(`/learn/${course.id}`);
-    } catch (err: any) {
-      setError(err?.message ?? "Failed to create course");
-    } finally {
-      setBusy(false);
-    }
+      const course = await createCourse({ service, profile, level });
+      nav(`/admin/course/${course.id}`); // open the draft for review
+    } finally { setBusy(false); }
+  }
+
+  async function act(id: string, action: "approve" | "publish") {
+    if (action === "approve") await approveCourse(id); else await publishCourse(id);
+    refresh();
   }
 
   return (
     <div className="panel">
       <h1>Admin · Create a course</h1>
       <p className="muted">
-        Generate an adaptive course from your documentation. Same service, different persona →
-        different course.
+        Generate a <strong>draft</strong> from the knowledge base. Nothing reaches end-users until
+        you <strong>approve</strong> and <strong>publish</strong> it.
       </p>
       <form onSubmit={submit} className="form">
-        <label>
-          Service / product
+        <label>Service / process
           <input value={service} onChange={(e) => setService(e.target.value)} required />
         </label>
-
-        <label>
-          Audience
-          <select value={audience} onChange={(e) => setAudience(e.target.value as Audience)}>
-            {AUDIENCES.map((a) => <option key={a} value={a}>{a}</option>)}
+        <label>Target profile
+          <select value={profile} onChange={(e) => setProfile(e.target.value as Profile)}>
+            {PROFILES.map((p) => <option key={p} value={p}>{PROFILE_LABELS[p]}</option>)}
           </select>
         </label>
-
-        <label>
-          Level
+        <label>Level
           <select value={level} onChange={(e) => setLevel(e.target.value as Level)}>
             {LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
           </select>
         </label>
-
-        <label>
-          Scope
-          <select value={scope} onChange={(e) => setScope(e.target.value as Scope)}>
-            {SCOPES.map((s) => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </label>
-
-        <button type="submit" disabled={busy}>
-          {busy ? "Generating…" : "Generate course"}
-        </button>
-        {error && <p className="error">{error}</p>}
+        <button type="submit" disabled={busy}>{busy ? "Generating…" : "Generate draft"}</button>
       </form>
+
+      <h2>All courses</h2>
+      <table className="table">
+        <thead><tr><th>Title</th><th>Profile</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          {courses.map((c) => (
+            <tr key={c.id}>
+              <td><Link to={`/admin/course/${c.id}`}>{c.title}</Link></td>
+              <td>{c.profile}</td>
+              <td><span className={`badge badge-${c.status}`}>{c.status}</span></td>
+              <td className="row-actions">
+                {c.status === "draft" && <button onClick={() => act(c.id, "approve")}>Approve</button>}
+                {c.status === "approved" && <button onClick={() => act(c.id, "publish")}>Publish</button>}
+                {c.status === "published" && <span className="muted small">live</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

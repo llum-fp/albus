@@ -30,8 +30,8 @@ def generate(req: CreateCourseRequest) -> Course:
 def _generate_via_agent(req: CreateCourseRequest) -> Course:
     proc = subprocess.run(
         [sys.executable, str(_AGENT_CLI),
-         "--service", req.service, "--audience", req.audience,
-         "--level", req.level, "--scope", req.scope, "--json"],
+         "--service", req.service, "--profile", req.profile,
+         "--level", req.level, "--json"],
         capture_output=True, text=True, timeout=120, check=True,
     )
     return Course.model_validate_json(proc.stdout)

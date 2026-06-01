@@ -24,16 +24,16 @@ frontend:
 	cd frontend && npm run dev
 
 agent:
-	cd agent && python3 run_cli.py --service "Captive Portal" --audience sales --level beginner --scope external
+	cd agent && python3 run_cli.py --service "Captive Portal" --profile sales --level beginner
 
 ingest:
-	cd ingestion && python3 run_cli.py --service "Captive Portal" --scope external
+	cd ingestion && python3 run_cli.py --service "Captive Portal"
 
 # Offline end-to-end check — proves every lane runs without servers/credentials.
 smoke:
-	@echo "== ingestion (external = redacted) ==" && cd ingestion && python3 run_cli.py --service "Captive Portal" --scope external
-	@echo "== ingestion (internal = full) ==" && cd ingestion && python3 run_cli.py --service "Captive Portal" --scope internal
-	@echo "== agent (stub) ==" && cd agent && python3 run_cli.py --service "Captive Portal" --audience technical --scope internal
+	@echo "== ingestion (approved knowledge + citations) ==" && cd ingestion && python3 run_cli.py --service "Captive Portal"
+	@echo "== agent draft: sales ==" && cd agent && python3 run_cli.py --service "Captive Portal" --profile sales
+	@echo "== agent draft: csm ==" && cd agent && python3 run_cli.py --service "Captive Portal" --profile csm
 
 stop:
 	-pkill -f uvicorn

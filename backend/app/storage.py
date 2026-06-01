@@ -38,7 +38,7 @@ def list_summaries() -> List[CourseSummary]:
         try:
             c = Course.model_validate_json(path.read_text(encoding="utf-8"))
             out.append(CourseSummary(id=c.id, title=c.title, service=c.service,
-                                     persona=c.persona, status=c.status))
+                                     profile=c.profile, level=c.level, status=c.status))
         except Exception:
             continue
     return out

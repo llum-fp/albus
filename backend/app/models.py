@@ -4,16 +4,11 @@ from __future__ import annotations
 from typing import List, Literal, Optional
 from pydantic import BaseModel, Field
 
-Audience = Literal["sales", "technical", "management", "general"]
+# Target end-user profiles (the visibility axis). From the spec: Sales / Technical / CSM.
+Profile = Literal["sales", "technical", "csm"]
 Level = Literal["beginner", "intermediate", "advanced"]
-Scope = Literal["internal", "external"]
-Status = Literal["pending", "generating", "ready", "failed"]
-
-
-class Persona(BaseModel):
-    audience: Audience
-    level: Level
-    scope: Scope
+# Lifecycle — the mandatory human-approval gate. End-users see only "published".
+Status = Literal["draft", "approved", "published", "archived"]
 
 
 class Citation(BaseModel):
@@ -25,6 +20,7 @@ class QuizItem(BaseModel):
     question: str
     options: List[str]
     answer_index: int
+    explanation: str = ""
 
 
 class Module(BaseModel):
@@ -41,8 +37,10 @@ class Course(BaseModel):
     title: str
     service: str
     summary: str = ""
-    persona: Persona
-    status: Status = "ready"
+    author: str = "admin"
+    profile: Profile
+    level: Level = "beginner"
+    status: Status = "draft"
     created_at: str = ""
     modules: List[Module] = Field(default_factory=list)
 
@@ -51,12 +49,12 @@ class CourseSummary(BaseModel):
     id: str
     title: str
     service: str
-    persona: Persona
+    profile: Profile
+    level: Level
     status: Status
 
 
 class CreateCourseRequest(BaseModel):
     service: str
-    audience: Audience = "general"
+    profile: Profile = "sales"
     level: Level = "beginner"
-    scope: Scope = "internal"

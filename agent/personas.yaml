@@ -1,38 +1,29 @@
-# Personas as CONFIG, not code. Adding "Finance wants billing" later = a new entry here.
-# The Audience Adapter step consumes this to re-project a course for its target reader.
+# Profiles as CONFIG, not code. The spec fixes three end-user profiles: Sales / Technical / CSM.
+# The course generator (and Audience Adapter step) consume this to shape a course for its profile.
 
-audiences:
+profiles:
   sales:
-    label: Sales / Marketing
+    label: Sales
     emphasis: >
-      Why a customer buys it, the value proposition, competitive differentiation,
-      typical objections and how to handle them.
+      The value proposition, why the customer buys, competitive differentiation,
+      objection handling, and customer use cases.
     avoid: deep configuration internals
     tone: persuasive, benefit-led, plain language
   technical:
-    label: Technical / Support
+    label: Technical
     emphasis: >
-      How it works under the hood, architecture, configuration steps, common
-      failure modes and troubleshooting.
+      How the product/service works, architecture, configuration steps, procedures,
+      common failure modes and troubleshooting.
     avoid: marketing fluff
-    tone: precise, hands-on, assumes responsibility
-  management:
-    label: Management
-    emphasis: business impact, cost model, rollout, risk, decision criteria
-    avoid: low-level config
-    tone: concise, decision-oriented
-  general:
-    label: General
-    emphasis: broad plain-language overview
-    avoid: jargon
-    tone: friendly, accessible
+    tone: precise, hands-on
+  csm:
+    label: Customer Service Manager
+    emphasis: >
+      Processes, SLAs, escalation paths, client communication, and incident management.
+    avoid: low-level engineering detail
+    tone: process-oriented, customer-facing
 
 levels:
   beginner: { assumes: no prior knowledge, depth: foundational concepts only }
   intermediate: { assumes: working familiarity, depth: practical detail and examples }
   advanced: { assumes: expert, depth: edge cases, internals, optimisation }
-
-# scope controls REDACTION, not just tone — enforced at retrieval in Phase 2.
-scopes:
-  internal: { may_include_confidential: true, note: for employees only }
-  external: { may_include_confidential: false, note: safe to share with customers }

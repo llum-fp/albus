@@ -1,12 +1,13 @@
 # Albus
 
 An orchestrated agent platform that turns internal documentation (Confluence / SharePoint)
-into **adaptive training courses** — re-projected for the audience (sales vs. technical),
-the level (beginner → advanced), and the scope (internal vs. external).
+into **interactive training courses** — personalised per end-user profile (sales / technical / csm)
+and level (beginner → advanced). An admin generates a **draft** with AI, then **reviews and
+approves** it; only published courses reach employees of the matching profile.
 
-> Demo target: pick a service (e.g. **Captive Portal**) → generate a *Sales / external* course,
-> then regenerate the *same source* as a *Tech-support / internal* course. Same knowledge,
-> two audiences. That contrast is the pitch.
+> Demo target: pick a service (e.g. **Captive Portal**) → AI generates a *draft* for a profile →
+> admin **approves & publishes** → the matching end-user sees it (others don't). The
+> human-approval gate + per-profile visibility is the pitch.
 
 ## Repository layout — 5 lanes for 5 people
 
@@ -34,12 +35,12 @@ cd backend && ./run.sh            # → http://localhost:8000
 # 2. Frontend (admin + user portals)
 cd frontend && npm install && npm run dev   # → http://localhost:5173
 
-# 3. Agent (optional for the POC — generate a course from the CLI)
+# 3. Agent (optional for the POC — generate a draft from the CLI)
 cd agent && pip install -r requirements.txt && python run_cli.py \
-    --service "Captive Portal" --audience sales --level beginner --scope external
+    --service "Captive Portal" --profile sales --level beginner
 
-# 4. Ingestion (source chunks the agent uses; scope=external is redacted)
-cd ingestion && python run_cli.py --service "Captive Portal" --scope external
+# 4. Ingestion (approved-knowledge chunks the agent uses, with citations)
+cd ingestion && python run_cli.py --service "Captive Portal"
 ```
 
 Or from the repo root: `make smoke` runs an offline end-to-end check of every lane.

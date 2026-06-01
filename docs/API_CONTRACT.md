@@ -5,53 +5,52 @@ produces objects matching `shared/schema/course.schema.json`. Change via reviewe
 
 Base URL (dev): `http://localhost:8000`
 
+> Scope note: this covers the POC surface (course CRUD + lifecycle). The fuller spec surface —
+> auth/login, AI-tutor chat, evaluation attempts, progress, certificates, feedback, dashboard —
+> is documented in `CLAUDE.md` as the target and is **not yet** in this contract. Add endpoints
+> here as those land.
+
+## Core concepts
+- **profile** ∈ `sales | technical | csm` — the target end-user profile (visibility axis).
+- **status** ∈ `draft | approved | published | archived` — lifecycle. Generated courses are
+  always `draft`. End-users see ONLY `published`. The draft→approved→published transition is an
+  explicit admin action (the mandatory human-approval gate).
+
 ## Endpoints
 
-### `GET /api/courses`
-List course summaries.
+### `GET /api/profiles`
+Profiles + levels for the Admin form: `{ "profiles": [{value,label,hint}], "levels": [...] }`.
+
+### `GET /api/courses?status=&profile=`
+List course summaries, optionally filtered.
+- Admin: no filter → all courses (drafts included).
+- End-user: `?status=published&profile=<their profile>` → only what they may see.
 ```json
-[
-  { "id": "captive-portal-sales-beginner-external",
-    "title": "Selling the Captive Portal",
-    "service": "Captive Portal",
-    "persona": { "audience": "sales", "level": "beginner", "scope": "external" },
-    "status": "ready" }
-]
+[ { "id": "captive-portal-sales-beginner", "title": "Captive Portal for SALES",
+    "service": "Captive Portal", "profile": "sales", "level": "beginner", "status": "published" } ]
 ```
 
 ### `GET /api/courses/{id}`
 Full course object — matches `course.schema.json`.
 
-### `POST /api/courses`
-Request generation of a new course.
-**Body:**
-```json
-{ "service": "Captive Portal",
-  "audience": "sales",      // sales | technical | management | general
-  "level": "beginner",      // beginner | intermediate | advanced
-  "scope": "external" }     // internal | external
-```
-**Response:** the created course object with `status: "generating"` (or `"ready"` if synchronous).
-
 ### `GET /api/courses/{id}/status`
-```json
-{ "id": "...", "status": "ready" }   // pending | generating | ready | failed
-```
+`{ "id": "...", "status": "draft" }`
 
-### `GET /api/personas`
-Returns the available persona configs (audience descriptions, allowed depth, emphasis).
-Used by the Admin portal to populate the form.
+### `POST /api/courses`
+Generate a new course **draft**.
+**Body:** `{ "service": "Captive Portal", "profile": "sales", "level": "beginner" }`
+**Response:** the created course with `status: "draft"`. (Never auto-published.)
+
+### `POST /api/courses/{id}/approve`  → sets `status: "approved"`
+### `POST /api/courses/{id}/publish`  → sets `status: "published"` (now visible to the profile)
+### `POST /api/courses/{id}/archive`  → sets `status: "archived"`
+Each returns the updated course object.
 
 ## Integration boundaries
-
 ```
-frontend  ──HTTP──>  backend  ──(in-process stub OR subprocess)──>  agent
-   │                    │                                              │
- mock.ts             stub.py                                      stub.py / Claude SDK
-(works alone)      (works alone)                                  (works alone)
+frontend ──HTTP──> backend ──> generator.py ──┬─ app/stub.py            (default, offline)
+                                              └─ agent/run_cli.py --json (ALBUS_USE_AGENT=1)
 ```
-
-- **Frontend** never calls the agent directly. Only the backend.
-- **Backend** owns storage + the public API. It calls the agent to generate; if the agent isn't
-  wired yet, it falls back to its own `stub.py` so the FE demo still works.
-- **Agent** is pure: given a request, returns a Course object. No HTTP, no DB.
+- Frontend never calls the agent directly — only the backend.
+- Backend owns storage + the public API + the lifecycle transitions.
+- Agent is pure: request → Course draft. No HTTP, no DB.
