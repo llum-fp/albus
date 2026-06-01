@@ -225,3 +225,44 @@ levels:
   beginner: { assumes: no prior knowledge, depth: foundational concepts only }
   intermediate: { assumes: working familiarity, depth: practical detail and examples }
   advanced: { assumes: expert, depth: edge cases, internals, optimisation }
+
+# -----------------------------------------------------------------------------------------------
+# Summative final evaluation (RF-7): GRADED, has a pass threshold and counts toward certification.
+# This is intentionally separate from the per-module `quiz` entries above, which are FORMATIVE
+# checkpoints (low-stakes, immediate feedback, retryable, NOT graded). The stub tags items from
+# here as kind="summative" and the per-module quizzes as kind="formative".
+# Keyed by profile so each audience is assessed on what matters to it. Generic via {service}.
+final_assessment:
+  sales:
+    - style: scenario
+      question: "A prospect is comparing {service} only on price. What is the best close?"
+      options: ["Match the lowest price", "Quantify the value/outcome {service} delivers", "Walk away", "Offer a discount immediately"]
+      answer_index: 1
+      explanation: "Sell on quantified value and outcomes, not on price alone."
+    - style: multiple_choice
+      question: "Which is the strongest use of a customer use case when selling {service}?"
+      options: ["To pad the deck", "To make the value concrete for a similar buyer", "To avoid talking price", "To replace a demo"]
+      answer_index: 1
+      explanation: "Use cases make value concrete and relatable for the buyer."
+  technical:
+    - style: scenario
+      question: "After deploying {service}, users report a failure that appeared post-change. First step?"
+      options: ["Change more settings", "Roll back and reproduce in isolation", "Escalate to sales", "Ignore until it recurs"]
+      answer_index: 1
+      explanation: "Roll back to known-good and isolate before further changes."
+    - style: multiple_choice
+      question: "What confirms a {service} configuration change is correct?"
+      options: ["It deployed without error", "Validation against expected behaviour", "Nobody complained yet", "The logs were cleared"]
+      answer_index: 1
+      explanation: "Only validation against expected behaviour confirms correctness."
+  csm:
+    - style: scenario
+      question: "A {service} incident will breach its SLA in minutes. What do you do first?"
+      options: ["Wait", "Acknowledge and trigger escalation per the path", "Close the ticket", "Reassign silently"]
+      answer_index: 1
+      explanation: "Acknowledge and escalate immediately to protect the SLA."
+    - style: true_false
+      question: "Closing a {service} incident requires confirming resolution with the client."
+      options: ["True", "False"]
+      answer_index: 0
+      explanation: "Client confirmation of resolution is part of proper closure."
